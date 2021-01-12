@@ -1,7 +1,7 @@
 {
   "name": "learn-react-query",
   "version": "1.0.0",
-  "description": "React Query follow along tutorial.",
+  "description": "",
   "keywords": [],
   "main": "src/index.tsx",
   "dependencies": {

@@ -1,5 +1,5 @@
-import React from 'react';
-import GHUsers from './components/GHUsers';
+import React from "react";
+import GHUsers from "./components/GHUsers";
 
 export default function App() {
   return (
