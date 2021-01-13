@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosError } from "axios";
 import github from "../services/github";
-import { useQuery } from "react-query";
 import Loading from "./Loading";
 import Error from "./Error";
 import timeout from "../helpers/timeout";
@@ -14,6 +13,7 @@ interface User {
 }
 
 const GHUsers = () => {
+  // TODO: Refactor with useQuery hook
   const [status, setStatus] = useState<"loading" | "error" | "success">(
     "loading"
   );
@@ -23,11 +23,10 @@ const GHUsers = () => {
   const fetchData = useCallback(async () => {
     try {
       setStatus("loading");
-      const response = await github.get<User[]>("users");
       await timeout(2000);
+      const response = await github.get<User[]>("users");
       setStatus("success");
       setData(response.data);
-      return response.data;
     } catch (error) {
       setStatus("error");
       setError(error);
@@ -49,9 +48,9 @@ const GHUsers = () => {
           <div className="bg-gray-50 w-56 mx-3 my-3">
             <img className="w-full" src={user.avatar_url} alt="User avatar" />
             <div className="flex flex-col p-2">
-              <h2 className="font-semibold text-xl mb-5">{user.login}</h2>
+              <h2 className="font-semibold text-2xl mb-5">{user.login}</h2>
               <a
-                className="text-blue-600 self-end"
+                className="text-red-400 font-bold self-center hover:text-red-600 transition-colors"
                 href={user.html_url}
                 target="_blank"
                 rel="noreferrer"
