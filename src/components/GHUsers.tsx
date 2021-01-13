@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import github from "../services/github";
+import { useQuery } from "react-query";
+import Loading from "./Loading";
+import Error from "./Error";
+import timeout from "../helpers/timeout";
 
 interface User {
   id: number;
@@ -10,18 +14,22 @@ interface User {
 }
 
 const GHUsers = () => {
-  const [status, setStatus] = useState<'loading' | 'error' | 'success'>('loading');
+  const [status, setStatus] = useState<"loading" | "error" | "success">(
+    "loading"
+  );
   const [error, setError] = useState<AxiosError | null>(null);
   const [data, setData] = useState<User[]>([]);
 
   const fetchData = useCallback(async () => {
     try {
-      setStatus('loading')
-      const response = await github.get<User[]>('users');
-      setStatus('success');
+      setStatus("loading");
+      const response = await github.get<User[]>("users");
+      await timeout(2000);
+      setStatus("success");
       setData(response.data);
+      return response.data;
     } catch (error) {
-      setStatus('error');
+      setStatus("error");
       setError(error);
     }
   }, []);
@@ -30,10 +38,9 @@ const GHUsers = () => {
     fetchData();
   }, [fetchData]);
 
-  if (status === 'error')
-    return <p>Error! {error && JSON.stringify(error.response?.data)}</p>;
+  if (status === "error") return <Error error={error} />;
 
-  if (status === 'loading') return <p>Loading...</p>;
+  if (status === "loading") return <Loading />;
 
   return (
     <div className="bg-gray-200 p-5 flex flex-wrap justify-center">
